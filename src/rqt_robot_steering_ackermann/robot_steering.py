@@ -31,12 +31,13 @@
 import os
 
 from ament_index_python import get_resource
-from geometry_msgs.msg import Twist
+from ackermann_msgs.msg import AckermannDriveStamped
 from python_qt_binding import loadUi
 from python_qt_binding.QtCore import Qt, QTimer, Slot
 from python_qt_binding.QtGui import QKeySequence
 from python_qt_binding.QtWidgets import QShortcut, QWidget
 from rclpy.qos import QoSProfile
+from rclpy.time import Time
 from rqt_gui_py.plugin import Plugin
 
 
@@ -53,8 +54,8 @@ class RobotSteering(Plugin):
         self._publisher = None
 
         self._widget = QWidget()
-        _, package_path = get_resource('packages', 'rqt_robot_steering')
-        ui_file = os.path.join(package_path, 'share', 'rqt_robot_steering', 'resource', 'RobotSteering.ui')
+        _, package_path = get_resource('packages', 'rqt_robot_steering_ackermann')
+        ui_file = os.path.join(package_path, 'share', 'rqt_robot_steering_ackermann', 'resource', 'RobotSteering.ui')
         loadUi(ui_file, self._widget)
         self._widget.setObjectName('RobotSteeringUi')
         if context.serial_number() > 1:
@@ -180,7 +181,7 @@ class RobotSteering(Plugin):
         self._unregister_publisher()
         if topic == '':
             return
-        self._publisher = self._node.create_publisher(Twist, topic, qos_profile=QoSProfile(depth=10))
+        self._publisher = self._node.create_publisher(AckermannDriveStamped, topic, qos_profile=QoSProfile(depth=10))
 
     def _on_stop_pressed(self):
         # If the current value of sliders is zero directly send stop twist msg
@@ -264,22 +265,20 @@ class RobotSteering(Plugin):
     def _send_twist(self, x_linear, z_angular):
         if self._publisher is None:
             return
-        twist = Twist()
-        twist.linear.x = x_linear
-        twist.linear.y = 0.0
-        twist.linear.z = 0.0
-        twist.angular.x = 0.0
-        twist.angular.y = 0.0
-        twist.angular.z = z_angular
+        acker_drive = AckermannDriveStamped()
+        acker_drive.header.stamp = self._node.get_clock().now().to_msg()
+        acker_drive.drive.speed = x_linear
+        acker_drive.drive.steering_angle = z_angular
+        acker_drive.drive.steering_angle_velocity = 0.5
 
         # Only send the zero command once so other devices can take control
         if x_linear == 0.0 and z_angular == 0.0:
             if not self.zero_cmd_sent:
                 self.zero_cmd_sent = True
-                self._publisher.publish(twist)
+                self._publisher.publish(acker_drive)
         else:
             self.zero_cmd_sent = False
-            self._publisher.publish(twist)
+            self._publisher.publish(acker_drive)
 
     def _unregister_publisher(self):
         if self._publisher is not None:

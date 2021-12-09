@@ -1,7 +1,7 @@
 <library path="src">
-  <class name="RobotSteering" type="rqt_robot_steering.robot_steering.RobotSteering" base_class_type="rqt_gui_py::Plugin">
+  <class name="RobotSteering" type="rqt_robot_steering_ackermann.robot_steering.RobotSteering" base_class_type="rqt_gui_py::Plugin">
     <description>
-      A Python GUI plugin to steer a robot with a geometry_msgs/Twist message.
+      A Python GUI plugin to steer a robot with a ackermann_msgs/AckermannDriveStamped message.
     </description>
     <qtgui>
       <group>
@@ -9,9 +9,9 @@
         <icon type="theme">folder</icon>
         <statustip>Plugins related to robot tools.</statustip>
       </group>
-      <label>Robot Steering</label>
+      <label>Robot Steering Ackermann</label>
       <icon type="theme">input-gaming</icon>
-      <statustip>A Python GUI plugin for steering a robot using geometry_msgs/Twist messages.</statustip>
+      <statustip>A Python GUI plugin for steering a robot using ackermann_msgs/AckermannDriveStamped messages.</statustip>
     </qtgui>
   </class>
 </library>

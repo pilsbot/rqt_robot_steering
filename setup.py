@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'rqt_robot_steering'
+package_name = 'rqt_robot_steering_ackermann'
 setup(
     name=package_name,
     version='1.0.0',
@@ -12,7 +12,7 @@ setup(
         ('share/' + package_name + '/resource', ['resource/RobotSteering.ui']),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, ['plugin.xml']),
-        ('lib/' + package_name, ['scripts/rqt_robot_steering'])
+        ('lib/' + package_name, ['scripts/rqt_robot_steering_ackermann'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -27,8 +27,8 @@ setup(
         'Topic :: Software Development',
     ],
     description=(
-        'rqt_robot_steering provides a GUI plugin for steering a robot using Twist messages.'
+        'rqt_robot_steering_ackermann provides a GUI plugin for steering a robot using Twist messages.'
     ),
     license='BSD',
-    scripts=['scripts/rqt_robot_steering'],
+    scripts=['scripts/rqt_robot_steering_ackermann'],
 )
